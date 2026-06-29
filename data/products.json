@@ -55,5 +55,62 @@
     "gumroad_url": "",
     "gumroad_id": "",
     "created_at": "2026-06-29T06:09:30.893272+00:00"
+  },
+  {
+    "id": "pdf-crypto_for_beginners__complete_guide-20260629_0615",
+    "topic": "Crypto for Beginners: Complete Guide",
+    "country": "US",
+    "title": "Complete Guide: Crypto for Beginners",
+    "subtitle": "Unlock the world of cryptocurrency and start investing with confidence in the US market",
+    "tags": [
+      "cryptocurrency",
+      "bitcoin",
+      "investing",
+      "blockchain",
+      "US regulations"
+    ],
+    "price_usd": 4.99,
+    "pdf_url": "https://github.com/Cfeesto/pdfbot/releases/download/pdf-crypto_for_beginners__complete_guide-20260629_0615/Crypto_for_Beginners__Complete_Guide_20260629_0615.pdf",
+    "gumroad_url": "https://abdullahali14.gumroad.com/l/hddzi",
+    "gumroad_id": "-3tAYPZqBk7E7_jzuizStg==",
+    "created_at": "2026-06-29T06:15:29.060567+00:00"
+  },
+  {
+    "id": "pdf-python_for_beginners__get_paid_to_code-20260629_0615",
+    "topic": "Python for Beginners: Get Paid to Code",
+    "country": "US",
+    "title": "Complete Guide: Python for Beginners Get Paid to Code",
+    "subtitle": "Learn how to monetize your coding skills with Python and start a lucrative career in the US tech industry",
+    "tags": [
+      "Python",
+      "Coding",
+      "US Tech Industry",
+      "Job Market",
+      "Career Development"
+    ],
+    "price_usd": 4.99,
+    "pdf_url": "https://github.com/Cfeesto/pdfbot/releases/download/pdf-python_for_beginners__get_paid_to_code-20260629_0615/Python_for_Beginners__Get_Paid_to_Code_20260629_0615.pdf",
+    "gumroad_url": "https://abdullahali14.gumroad.com/l/tpgmik",
+    "gumroad_id": "HR-js7x5pNtL9SDUPA7d9Q==",
+    "created_at": "2026-06-29T06:15:36.203193+00:00"
+  },
+  {
+    "id": "pdf-how_to_start_a_podcast_for_profit-20260629_0615",
+    "topic": "How to Start a Podcast for Profit",
+    "country": "US",
+    "title": "Complete Guide: How to Start a Podcast for Profit",
+    "subtitle": "Turn your passion into a lucrative business with a successful podcast that generates significant revenue and builds a loyal audience",
+    "tags": [
+      "podcasting",
+      "online business",
+      "entrepreneurship",
+      "marketing",
+      "monetization"
+    ],
+    "price_usd": 4.99,
+    "pdf_url": "https://github.com/Cfeesto/pdfbot/releases/download/pdf-how_to_start_a_podcast_for_profit-20260629_0615/How_to_Start_a_Podcast_for_Profit_20260629_0615.pdf",
+    "gumroad_url": "https://abdullahali14.gumroad.com/l/idyqbp",
+    "gumroad_id": "R6-WSWz58RFSYQqCus9Lqg==",
+    "created_at": "2026-06-29T06:15:45.231389+00:00"
   }
 ]
