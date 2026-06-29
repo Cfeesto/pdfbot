@@ -132,5 +132,72 @@
     "etsy_url": "",
     "created_at": "2026-06-29T14:12:25.644930+00:00",
     "is_bundle": true
+  },
+  {
+    "id": "pdf-remote_work_productivity_system-20260629_1440",
+    "topic": "Remote Work Productivity System",
+    "country": "US",
+    "title": "Complete Guide: Remote Work Productivity System",
+    "subtitle": "Maximize your efficiency and achieve a better work-life balance while working remotely with our comprehensive guide",
+    "tags": [
+      "remote work",
+      "productivity",
+      "time management",
+      "work-life balance",
+      "communication"
+    ],
+    "price_usd": 9.99,
+    "pdf_url": "https://github.com/Cfeesto/pdfbot/releases/download/pdf-remote_work_productivity_system-20260629_1440/Remote_Work_Productivity_System_20260629_1440.pdf",
+    "gumroad_url": "",
+    "gumroad_id": "",
+    "etsy_url": "",
+    "pinterest_pin_id": "",
+    "devto_url": "",
+    "hashnode_url": "",
+    "created_at": "2026-06-29T14:41:01.168099+00:00"
+  },
+  {
+    "id": "pdf-how_to_start_freelancing_in_2025-20260629_1441",
+    "topic": "How to Start Freelancing in 2025",
+    "country": "US",
+    "title": "Complete Guide: How to Start Freelancing in 2025",
+    "subtitle": "Unlock the freedom and flexibility to work on your own terms with a successful freelancing career",
+    "tags": [
+      "freelancing",
+      "career development",
+      "entrepreneurship"
+    ],
+    "price_usd": 9.99,
+    "pdf_url": "https://github.com/Cfeesto/pdfbot/releases/download/pdf-how_to_start_freelancing_in_2025-20260629_1441/How_to_Start_Freelancing_in_2025_20260629_1441.pdf",
+    "gumroad_url": "",
+    "gumroad_id": "",
+    "etsy_url": "",
+    "pinterest_pin_id": "",
+    "devto_url": "",
+    "hashnode_url": "",
+    "created_at": "2026-06-29T14:41:07.923568+00:00"
+  },
+  {
+    "id": "pdf-youtube_channel_growth_secrets-20260629_1441",
+    "topic": "YouTube Channel Growth Secrets",
+    "country": "US",
+    "title": "Complete Guide: YouTube Channel Growth Secrets",
+    "subtitle": "Unlock the full potential of your YouTube channel and attract thousands of new viewers with these proven growth secrets",
+    "tags": [
+      "YouTube Channel Growth",
+      "Video Marketing",
+      "Social Media",
+      "Content Creation",
+      "Online Business"
+    ],
+    "price_usd": 9.99,
+    "pdf_url": "https://github.com/Cfeesto/pdfbot/releases/download/pdf-youtube_channel_growth_secrets-20260629_1441/YouTube_Channel_Growth_Secrets_20260629_1441.pdf",
+    "gumroad_url": "",
+    "gumroad_id": "",
+    "etsy_url": "",
+    "pinterest_pin_id": "",
+    "devto_url": "",
+    "hashnode_url": "",
+    "created_at": "2026-06-29T14:41:14.748450+00:00"
   }
 ]
