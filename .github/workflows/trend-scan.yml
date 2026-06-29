@@ -43,11 +43,17 @@ jobs:
           MAX_TOPICS:          ${{ inputs.max_topics || '3' }}
           GH_TOKEN:            ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY:   ${{ github.repository }}
-          PINTEREST_TOKEN:     ${{ secrets.PINTEREST_TOKEN }}
-          PINTEREST_BOARD_ID:  ${{ secrets.PINTEREST_BOARD_ID }}
-          ETSY_API_KEY:        ${{ secrets.ETSY_API_KEY }}
-          ETSY_SHOP_ID:        ${{ secrets.ETSY_SHOP_ID }}
-          ETSY_REFRESH_TOKEN:  ${{ secrets.ETSY_REFRESH_TOKEN }}
+          PINTEREST_TOKEN:      ${{ secrets.PINTEREST_TOKEN }}
+          PINTEREST_BOARD_ID:   ${{ secrets.PINTEREST_BOARD_ID }}
+          ETSY_API_KEY:         ${{ secrets.ETSY_API_KEY }}
+          ETSY_SHOP_ID:         ${{ secrets.ETSY_SHOP_ID }}
+          ETSY_REFRESH_TOKEN:   ${{ secrets.ETSY_REFRESH_TOKEN }}
+          TELEGRAM_BOT_TOKEN:   ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHANNEL_ID:  ${{ secrets.TELEGRAM_CHANNEL_ID }}
+          DISCORD_WEBHOOK_URL:  ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DEVTO_API_KEY:        ${{ secrets.DEVTO_API_KEY }}
+          HASHNODE_TOKEN:       ${{ secrets.HASHNODE_TOKEN }}
+          HASHNODE_PUB_ID:      ${{ secrets.HASHNODE_PUB_ID }}
         run: python generate.py
 
       - name: Commit updated products.json

@@ -196,8 +196,10 @@
             ${p.gumroad_url      ? `<a href="${p.gumroad_url}" target="_blank">Gumroad ↗</a>` : ''}
             ${p.etsy_url         ? ` &nbsp;·&nbsp; <a href="${p.etsy_url}" target="_blank">Etsy ↗</a>` : ''}
             ${p.pinterest_pin_id ? ` &nbsp;·&nbsp; <a href="https://pinterest.com/pin/${p.pinterest_pin_id}" target="_blank">Pinterest ↗</a>` : ''}
+            ${p.devto_url        ? ` &nbsp;·&nbsp; <a href="${p.devto_url}" target="_blank">Dev.to ↗</a>` : ''}
+            ${p.hashnode_url     ? ` &nbsp;·&nbsp; <a href="${p.hashnode_url}" target="_blank">Hashnode ↗</a>` : ''}
             ${p.pdf_url          ? ` &nbsp;·&nbsp; <a href="${p.pdf_url}" target="_blank">Download ↗</a>` : ''}
-            ${p.is_bundle        ? ` &nbsp;<span class="tag">📦 Bundle</span>` : ''}
+            ${p.is_bundle        ? ` &nbsp;<span class="tag">Bundle</span>` : ''}
           </div>
         </div>
         <div class="price">$${p.price_usd || '4.99'}</div>

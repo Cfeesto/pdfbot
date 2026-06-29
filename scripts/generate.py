@@ -18,12 +18,15 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
-from trends      import fetch_trends
-from content     import generate_content, generate_description
-from pdf_builder import build_pdf
-from gumroad     import create_product, enable_affiliate
-from pinterest   import post_pin
-from etsy        import list_product as etsy_list_product
+from trends        import fetch_trends
+from content       import generate_content, generate_description
+from pdf_builder   import build_pdf
+from gumroad       import create_product, enable_affiliate
+from pinterest     import post_pin, _make_pin_image
+from etsy          import list_product as etsy_list_product
+from telegram      import post_product as telegram_post
+from discord_post  import post_product as discord_post
+from devto         import publish_devto, publish_hashnode
 
 DATA_FILE   = Path(__file__).parent.parent / "data" / "products.json"
 OUTPUT_DIR  = Path("/tmp/pdfs")
@@ -157,7 +160,70 @@ def run():
             except Exception as e:
                 print(f"[etsy] Failed: {e}")
 
-            # 7. Record
+            # 7. Generate pin image once — reuse for Telegram
+            pin_image_bytes = None
+            try:
+                pin_image_bytes = _make_pin_image(
+                    content["title"], content.get("subtitle", ""), PRICE_USD
+                )
+            except Exception:
+                pass
+
+            # 8. Announce on Telegram
+            if gumroad_url:
+                try:
+                    telegram_post(
+                        title       = content["title"],
+                        subtitle    = content.get("subtitle", ""),
+                        price       = PRICE_USD,
+                        gumroad_url = gumroad_url,
+                        etsy_url    = etsy_url,
+                        tags        = content.get("tags", []),
+                        pin_image   = pin_image_bytes,
+                    )
+                except Exception as e:
+                    print(f"[telegram] Failed: {e}")
+
+            # 9. Announce on Discord
+            if gumroad_url:
+                try:
+                    discord_post(
+                        title       = content["title"],
+                        subtitle    = content.get("subtitle", ""),
+                        price       = PRICE_USD,
+                        gumroad_url = gumroad_url,
+                        etsy_url    = etsy_url,
+                        tags        = content.get("tags", []),
+                    )
+                except Exception as e:
+                    print(f"[discord] Failed: {e}")
+
+            # 10. Publish teaser article on Dev.to (drives Google traffic)
+            devto_url    = ""
+            hashnode_url = ""
+            try:
+                devto_url = publish_devto(
+                    title       = content["title"],
+                    content     = content,
+                    price       = PRICE_USD,
+                    gumroad_url = gumroad_url or download_url,
+                    tags        = content.get("tags", []),
+                )
+            except Exception as e:
+                print(f"[devto] Failed: {e}")
+
+            try:
+                hashnode_url = publish_hashnode(
+                    title       = content["title"],
+                    content     = content,
+                    price       = PRICE_USD,
+                    gumroad_url = gumroad_url or download_url,
+                    tags        = content.get("tags", []),
+                )
+            except Exception as e:
+                print(f"[hashnode] Failed: {e}")
+
+            # 11. Record
             record = {
                 "id":               tag,
                 "topic":            topic,
@@ -171,6 +237,8 @@ def run():
                 "gumroad_id":       gumroad_id,
                 "etsy_url":         etsy_url,
                 "pinterest_pin_id": pinterest_pin_id,
+                "devto_url":        devto_url,
+                "hashnode_url":     hashnode_url,
                 "created_at":       datetime.now(timezone.utc).isoformat(),
             }
             new_products.append(record)
