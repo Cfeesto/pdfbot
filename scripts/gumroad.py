@@ -11,51 +11,43 @@ TOKEN    = os.environ.get("GUMROAD_TOKEN", "")
 
 
 def create_product(
-    title:       str,
-    description: str,
-    pdf_path:    str,
-    price_usd:   float = 4.99,
-    btc_address: str   = "",
+    title:        str,
+    description:  str,
+    pdf_path:     str,
+    price_usd:    float = 4.99,
+    btc_address:  str   = "",
+    download_url: str   = "",
 ) -> dict:
     """
-    Creates a new Gumroad product, uploads the PDF, publishes it.
+    Creates a Gumroad product with the GitHub Release URL as the content link.
+    Customers get the download URL automatically after purchase.
     Returns the Gumroad product dict on success.
     """
     if not TOKEN:
         raise RuntimeError("GUMROAD_TOKEN env var not set")
 
-    # ── Step 1: Create the product ────────────────────────────────────────────
     full_description = description
     if btc_address:
         full_description += (
             f"\n\n---\n"
             f"**Pay with Bitcoin:** Send exact amount to:\n"
             f"`{btc_address}`\n"
-            f"Then email your transaction ID to receive the download link."
+            f"Email your transaction ID to get the download link instantly."
         )
 
+    # Use GitHub Release URL as the product content URL
+    # Gumroad sends this link to the buyer after payment
     r = requests.post(f"{BASE_URL}/products", data={
-        "access_token":  TOKEN,
-        "name":          title,
-        "description":   full_description,
-        "price":         int(price_usd * 100),  # cents
-        "published":     True,
-        "url":           "",
+        "access_token": TOKEN,
+        "name":         title,
+        "description":  full_description,
+        "price":        int(price_usd * 100),  # cents
+        "published":    True,
+        "url":          download_url,          # GitHub Release download link
     })
     r.raise_for_status()
     product = r.json()["product"]
-    product_id = product["id"]
-
-    # ── Step 2: Upload the PDF as the product file ────────────────────────────
-    with open(pdf_path, "rb") as f:
-        ru = requests.put(
-            f"{BASE_URL}/products/{product_id}/files",
-            data={"access_token": TOKEN},
-            files={"file": (os.path.basename(pdf_path), f, "application/pdf")},
-        )
-        ru.raise_for_status()
-
-    print(f"[gumroad] Listed: {title} → {product.get('short_url', product_id)}")
+    print(f"[gumroad] Listed: {title} → {product.get('short_url', product['id'])}")
     return product
 
 

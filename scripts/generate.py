@@ -106,11 +106,12 @@ def run():
             gumroad_product = {}
             try:
                 gumroad_product = create_product(
-                    title       = content["title"],
-                    description = description,
-                    pdf_path    = pdf_path,
-                    price_usd   = PRICE_USD,
-                    btc_address = BTC_ADDRESS,
+                    title        = content["title"],
+                    description  = description,
+                    pdf_path     = pdf_path,
+                    price_usd    = PRICE_USD,
+                    btc_address  = BTC_ADDRESS,
+                    download_url = download_url,
                 )
             except Exception as e:
                 print(f"[gumroad] Failed: {e}")
