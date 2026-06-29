@@ -68,6 +68,19 @@ def fetch_all_products() -> list[dict]:
     return r.json().get("products", [])
 
 
+def enable_affiliate(product_id: str, commission_pct: int = 25) -> dict:
+    """Enable affiliate programme so others can earn commission promoting the product."""
+    r = requests.patch(f"{BASE_URL}/products/{product_id}", data={
+        "access_token":                TOKEN,
+        "affiliate_offer_description": f"Earn {commission_pct}% commission promoting this guide",
+        "affiliate_offer":             True,
+    })
+    r.raise_for_status()
+    product = r.json().get("product", {})
+    print(f"[gumroad] Affiliate {commission_pct}% enabled: {product_id}")
+    return product
+
+
 if __name__ == "__main__":
     products = fetch_all_products()
     print(f"Products on Gumroad: {len(products)}")

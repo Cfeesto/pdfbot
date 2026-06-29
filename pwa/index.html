@@ -82,8 +82,10 @@
   <!-- Stats row -->
   <div class="grid" id="stats-grid">
     <div class="stat-card"><div class="value" id="stat-pdfs">—</div><div class="label">PDFs Created</div></div>
-    <div class="stat-card green"><div class="value" id="stat-sales">—</div><div class="label">Total Sales</div></div>
+    <div class="stat-card green"><div class="value" id="stat-sales">—</div><div class="label">Gumroad Sales</div></div>
     <div class="stat-card green"><div class="value" id="stat-revenue">—</div><div class="label">Revenue (USD)</div></div>
+    <div class="stat-card"><div class="value" id="stat-etsy">—</div><div class="label">On Etsy</div></div>
+    <div class="stat-card"><div class="value" id="stat-pinterest">—</div><div class="label">Pinterest Pins</div></div>
     <div class="stat-card btc"><div class="value" id="stat-btc-bal">—</div><div class="label">BTC Balance</div></div>
     <div class="stat-card btc"><div class="value" id="stat-btc-usd">—</div><div class="label">BTC Value (USD)</div></div>
   </div>
@@ -165,9 +167,13 @@
     const revenue   = gumSales.reduce((s, t) => s + parseFloat(t.price || 0), 0);
     const btc       = sales.btc_summary || {};
 
+    const etsyCount    = products.filter(p => p.etsy_url).length;
+    const pinCount     = products.filter(p => p.pinterest_pin_id).length;
     document.getElementById("stat-pdfs").textContent    = products.length;
     document.getElementById("stat-sales").textContent   = gumSales.length;
     document.getElementById("stat-revenue").textContent = `$${revenue.toFixed(2)}`;
+    document.getElementById("stat-etsy").textContent    = etsyCount || "—";
+    document.getElementById("stat-pinterest").textContent = pinCount || "—";
     document.getElementById("stat-btc-bal").textContent = btc.balance_btc
       ? `${btc.balance_btc.toFixed(6)}`  : "—";
     document.getElementById("stat-btc-usd").textContent = btc.balance_usd
@@ -187,8 +193,11 @@
             ${(p.tags||[]).map(t => `<span class="tag">#${t}</span>`).join("")}
           </div>
           <div class="meta" style="margin-top:4px">
-            ${p.gumroad_url ? `<a href="${p.gumroad_url}" target="_blank">Gumroad ↗</a>` : ''}
-            ${p.pdf_url     ? ` &nbsp;·&nbsp; <a href="${p.pdf_url}" target="_blank">Download ↗</a>` : ''}
+            ${p.gumroad_url      ? `<a href="${p.gumroad_url}" target="_blank">Gumroad ↗</a>` : ''}
+            ${p.etsy_url         ? ` &nbsp;·&nbsp; <a href="${p.etsy_url}" target="_blank">Etsy ↗</a>` : ''}
+            ${p.pinterest_pin_id ? ` &nbsp;·&nbsp; <a href="https://pinterest.com/pin/${p.pinterest_pin_id}" target="_blank">Pinterest ↗</a>` : ''}
+            ${p.pdf_url          ? ` &nbsp;·&nbsp; <a href="${p.pdf_url}" target="_blank">Download ↗</a>` : ''}
+            ${p.is_bundle        ? ` &nbsp;<span class="tag">📦 Bundle</span>` : ''}
           </div>
         </div>
         <div class="price">$${p.price_usd || '4.99'}</div>

@@ -36,13 +36,18 @@ jobs:
       - name: Generate PDFs
         working-directory: scripts
         env:
-          GROQ_API_KEY:   ${{ secrets.GROQ_API_KEY }}
-          GUMROAD_TOKEN:  ${{ secrets.GUMROAD_TOKEN }}
-          BTC_ADDRESS:    ${{ secrets.BTC_ADDRESS }}
-          PDF_PRICE_USD:  ${{ vars.PDF_PRICE_USD || '4.99' }}
-          MAX_TOPICS:     ${{ inputs.max_topics || '3' }}
-          GH_TOKEN:       ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
+          GROQ_API_KEY:        ${{ secrets.GROQ_API_KEY }}
+          GUMROAD_TOKEN:       ${{ secrets.GUMROAD_TOKEN }}
+          BTC_ADDRESS:         ${{ secrets.BTC_ADDRESS }}
+          PDF_PRICE_USD:       ${{ vars.PDF_PRICE_USD || '9.99' }}
+          MAX_TOPICS:          ${{ inputs.max_topics || '3' }}
+          GH_TOKEN:            ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY:   ${{ github.repository }}
+          PINTEREST_TOKEN:     ${{ secrets.PINTEREST_TOKEN }}
+          PINTEREST_BOARD_ID:  ${{ secrets.PINTEREST_BOARD_ID }}
+          ETSY_API_KEY:        ${{ secrets.ETSY_API_KEY }}
+          ETSY_SHOP_ID:        ${{ secrets.ETSY_SHOP_ID }}
+          ETSY_REFRESH_TOKEN:  ${{ secrets.ETSY_REFRESH_TOKEN }}
         run: python generate.py
 
       - name: Commit updated products.json

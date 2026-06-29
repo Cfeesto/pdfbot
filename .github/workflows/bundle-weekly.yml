@@ -1,0 +1,53 @@
+name: Weekly PDF Bundle
+
+on:
+  schedule:
+    - cron: '0 10 * * 1'    # every Monday at 10:00 UTC
+  workflow_dispatch:
+    inputs:
+      bundle_size:
+        description: 'Number of PDFs to include in bundle'
+        default: '5'
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Create bundle
+        working-directory: scripts
+        env:
+          GUMROAD_TOKEN:      ${{ secrets.GUMROAD_TOKEN }}
+          BTC_ADDRESS:        ${{ secrets.BTC_ADDRESS }}
+          BUNDLE_PRICE_USD:   ${{ vars.BUNDLE_PRICE_USD || '19.99' }}
+          BUNDLE_SIZE:        ${{ inputs.bundle_size || '5' }}
+          GH_TOKEN:           ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY:  ${{ github.repository }}
+        run: python bundle.py
+
+      - name: Commit updated products.json
+        run: |
+          git config user.name  "pdf-bot[bot]"
+          git config user.email "pdf-bot@users.noreply.github.com"
+          git add data/products.json
+          git diff --staged --quiet || git commit -m "chore: weekly bundle $(date -u '+%Y-%m-%d')"
+          git push

@@ -21,7 +21,9 @@ from pathlib import Path
 from trends      import fetch_trends
 from content     import generate_content, generate_description
 from pdf_builder import build_pdf
-from gumroad     import create_product
+from gumroad     import create_product, enable_affiliate
+from pinterest   import post_pin
+from etsy        import list_product as etsy_list_product
 
 DATA_FILE   = Path(__file__).parent.parent / "data" / "products.json"
 OUTPUT_DIR  = Path("/tmp/pdfs")
@@ -104,6 +106,8 @@ def run():
             # 4. List on Gumroad
             description = generate_description(content)
             gumroad_product = {}
+            gumroad_url = ""
+            gumroad_id  = ""
             try:
                 gumroad_product = create_product(
                     title        = content["title"],
@@ -113,22 +117,61 @@ def run():
                     btc_address  = BTC_ADDRESS,
                     download_url = download_url,
                 )
+                gumroad_url = gumroad_product.get("short_url", "")
+                gumroad_id  = gumroad_product.get("id", "")
             except Exception as e:
                 print(f"[gumroad] Failed: {e}")
 
-            # 5. Record
+            # 4b. Enable affiliate programme (25% commission)
+            if gumroad_id:
+                try:
+                    enable_affiliate(gumroad_id, commission_pct=25)
+                except Exception as e:
+                    print(f"[gumroad] Affiliate enable failed: {e}")
+
+            # 5. Post to Pinterest
+            pinterest_pin_id = ""
+            if gumroad_url:
+                try:
+                    pin = post_pin(
+                        title       = content["title"],
+                        subtitle    = content.get("subtitle", ""),
+                        price       = PRICE_USD,
+                        gumroad_url = gumroad_url,
+                        tags        = content.get("tags", []),
+                    )
+                    pinterest_pin_id = pin.get("id", "")
+                except Exception as e:
+                    print(f"[pinterest] Failed: {e}")
+
+            # 6. List on Etsy
+            etsy_url = ""
+            try:
+                etsy_url = etsy_list_product(
+                    title       = content["title"],
+                    description = description,
+                    price_usd   = PRICE_USD,
+                    tags        = content.get("tags", []),
+                    pdf_path    = pdf_path,
+                )
+            except Exception as e:
+                print(f"[etsy] Failed: {e}")
+
+            # 7. Record
             record = {
-                "id":           tag,
-                "topic":        topic,
-                "country":      country,
-                "title":        content["title"],
-                "subtitle":     content["subtitle"],
-                "tags":         content.get("tags", []),
-                "price_usd":    PRICE_USD,
-                "pdf_url":      download_url,
-                "gumroad_url":  gumroad_product.get("short_url", ""),
-                "gumroad_id":   gumroad_product.get("id", ""),
-                "created_at":   datetime.now(timezone.utc).isoformat(),
+                "id":               tag,
+                "topic":            topic,
+                "country":          country,
+                "title":            content["title"],
+                "subtitle":         content["subtitle"],
+                "tags":             content.get("tags", []),
+                "price_usd":        PRICE_USD,
+                "pdf_url":          download_url,
+                "gumroad_url":      gumroad_url,
+                "gumroad_id":       gumroad_id,
+                "etsy_url":         etsy_url,
+                "pinterest_pin_id": pinterest_pin_id,
+                "created_at":       datetime.now(timezone.utc).isoformat(),
             }
             new_products.append(record)
             products.append(record)
