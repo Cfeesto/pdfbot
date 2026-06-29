@@ -60,6 +60,25 @@ jobs:
         run: |
           git config user.name  "pdf-bot[bot]"
           git config user.email "pdf-bot@users.noreply.github.com"
-          git add data/products.json
+          git add data/
           git diff --staged --quiet || git commit -m "chore: add new PDFs $(date -u '+%Y-%m-%d %H:%M UTC')"
           git push
+
+      - name: Trigger browser distribution on VPS
+        env:
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_HOST:    ${{ secrets.VPS_HOST }}
+          VPS_USER:    ${{ secrets.VPS_USER || 'root' }}
+        run: |
+          if [ -z "$VPS_SSH_KEY" ] || [ -z "$VPS_HOST" ]; then
+            echo "VPS_SSH_KEY or VPS_HOST not set — skipping browser distribute"
+            exit 0
+          fi
+          echo "$VPS_SSH_KEY" > /tmp/vps_key && chmod 600 /tmp/vps_key
+          ssh -i /tmp/vps_key -o StrictHostKeyChecking=no \
+            "$VPS_USER@$VPS_HOST" \
+            "cd /var/www/pyys/pdfbot && git pull --rebase && \
+             REDDIT_USER=\$REDDIT_USER REDDIT_PASS=\$REDDIT_PASS \
+             TWITTER_USER=\$TWITTER_USER TWITTER_PASS=\$TWITTER_PASS \
+             MEDIUM_EMAIL=\$MEDIUM_EMAIL MEDIUM_PASS=\$MEDIUM_PASS \
+             /var/www/pyys/stealth-browser-mcp/venv/bin/python scripts/browser_distribute.py >> /tmp/browser_distribute.log 2>&1 &"
