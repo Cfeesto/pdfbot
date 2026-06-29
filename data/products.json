@@ -1,1 +1,59 @@
-[]
+[
+  {
+    "id": "pdf-digital_marketing_for_small_business-20260629_0609",
+    "topic": "Digital Marketing for Small Business",
+    "country": "US",
+    "title": "Complete Guide: Digital Marketing for Small Business",
+    "subtitle": "Learn how to boost your small business's online presence and drive sales through effective digital marketing strategies",
+    "tags": [
+      "digital marketing",
+      "small business",
+      "online presence",
+      "SEO",
+      "social media marketing"
+    ],
+    "price_usd": 4.99,
+    "pdf_url": "https://github.com/Cfeesto/pdfbot/releases/download/pdf-digital_marketing_for_small_business-20260629_0609/Digital_Marketing_for_Small_Business_20260629_0609.pdf",
+    "gumroad_url": "",
+    "gumroad_id": "",
+    "created_at": "2026-06-29T06:09:17.728673+00:00"
+  },
+  {
+    "id": "pdf-how_to_start_dropshipping-20260629_0609",
+    "topic": "How to Start Dropshipping",
+    "country": "US",
+    "title": "Complete Guide: How to Start Dropshipping",
+    "subtitle": "Learn how to launch a successful dropshipping business in the US with minimal upfront costs and maximum potential for profit",
+    "tags": [
+      "dropshipping",
+      "e-commerce",
+      "online business",
+      "entrepreneurship",
+      "marketing"
+    ],
+    "price_usd": 4.99,
+    "pdf_url": "https://github.com/Cfeesto/pdfbot/releases/download/pdf-how_to_start_dropshipping-20260629_0609/How_to_Start_Dropshipping_20260629_0609.pdf",
+    "gumroad_url": "",
+    "gumroad_id": "",
+    "created_at": "2026-06-29T06:09:24.199395+00:00"
+  },
+  {
+    "id": "pdf-how_to_sell_on_etsy__complete_guide-20260629_0609",
+    "topic": "How to Sell on Etsy: Complete Guide",
+    "country": "US",
+    "title": "Complete Guide: How to Sell on Etsy",
+    "subtitle": "Turn your passion into a successful online business by learning how to sell on Etsy, the world's largest marketplace for handmade and unique items.",
+    "tags": [
+      "Etsy seller",
+      "online marketing",
+      "handmade products",
+      "vintage items",
+      "e-commerce"
+    ],
+    "price_usd": 4.99,
+    "pdf_url": "https://github.com/Cfeesto/pdfbot/releases/download/pdf-how_to_sell_on_etsy__complete_guide-20260629_0609/How_to_Sell_on_Etsy__Complete_Guide_20260629_0609.pdf",
+    "gumroad_url": "",
+    "gumroad_id": "",
+    "created_at": "2026-06-29T06:09:30.893272+00:00"
+  }
+]
