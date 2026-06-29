@@ -7,7 +7,8 @@ import os
 import json
 from groq import Groq
 
-client = Groq(api_key=os.environ["GROQ_API_KEY"])
+def _client():
+    return Groq(api_key=os.environ["GROQ_API_KEY"])
 
 SYSTEM_PROMPT = """You are an expert guide writer. Write clear, practical,
 engaging content that provides real value. Use simple language that works
@@ -41,7 +42,7 @@ Make it valuable, specific, and actionable.
 
 {CONTENT_SCHEMA}"""
 
-    response = client.chat.completions.create(
+    response = _client().chat.completions.create(
         model="llama-3.3-70b-versatile",   # free on Groq
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
