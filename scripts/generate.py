@@ -27,6 +27,7 @@ from etsy          import list_product as etsy_list_product
 from telegram      import post_product as telegram_post
 from discord_post  import post_product as discord_post
 from devto         import publish_devto, publish_hashnode
+from reddit_post   import post_product as reddit_post
 
 DATA_FILE   = Path(__file__).parent.parent / "data" / "products.json"
 OUTPUT_DIR  = Path("/tmp/pdfs")
@@ -223,7 +224,21 @@ def run():
             except Exception as e:
                 print(f"[hashnode] Failed: {e}")
 
-            # 11. Record
+            # 11. Post to Reddit via API (works from GitHub Actions runner)
+            reddit_urls: list = []
+            if gumroad_url:
+                try:
+                    reddit_urls = reddit_post(
+                        title       = content["title"],
+                        subtitle    = content.get("subtitle", ""),
+                        price       = PRICE_USD,
+                        gumroad_url = gumroad_url,
+                        tags        = content.get("tags", []),
+                    )
+                except Exception as e:
+                    print(f"[reddit] Failed: {e}")
+
+            # 12. Record
             record = {
                 "id":               tag,
                 "topic":            topic,
@@ -239,6 +254,7 @@ def run():
                 "pinterest_pin_id": pinterest_pin_id,
                 "devto_url":        devto_url,
                 "hashnode_url":     hashnode_url,
+                "reddit_urls":      reddit_urls,
                 "created_at":       datetime.now(timezone.utc).isoformat(),
             }
             new_products.append(record)
