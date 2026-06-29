@@ -1,0 +1,41 @@
+name: Sync Sales & BTC
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'   # every 30 minutes
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - run: pip install requests
+
+      - name: Sync sales + BTC
+        working-directory: scripts
+        env:
+          GUMROAD_TOKEN: ${{ secrets.GUMROAD_TOKEN }}
+          BTC_ADDRESS:   ${{ secrets.BTC_ADDRESS }}
+        run: python sync_sales.py
+
+      - name: Commit updated sales.json
+        run: |
+          git config user.name  "pdf-bot[bot]"
+          git config user.email "pdf-bot@users.noreply.github.com"
+          git add data/sales.json
+          git diff --staged --quiet || git commit -m "chore: sync sales $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>PDF Bot Dashboard</title>
+  <link rel="manifest" href="manifest.json"/>
+  <meta name="theme-color" content="#e94560"/>
+  <style>
+    :root {
+      --bg:      #1a1a2e;
+      --card:    #16213e;
+      --accent:  #e94560;
+      --green:   #00c853;
+      --text:    #eaeaea;
+      --muted:   #888;
+      --border:  #0f3460;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; }
+    header {
+      background: var(--card); border-bottom: 2px solid var(--accent);
+      padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;
+    }
+    header h1 { font-size: 1.2rem; color: var(--accent); }
+    #status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); display: inline-block; margin-right: 6px; }
+    #status-dot.live { background: var(--green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    main { padding: 16px; max-width: 900px; margin: 0 auto; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .stat-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 16px; text-align: center;
+    }
+    .stat-card .value { font-size: 1.8rem; font-weight: 700; color: var(--accent); }
+    .stat-card .label { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+    .stat-card.btc .value { color: #f7931a; }
+    .stat-card.green .value { color: var(--green); }
+    section { margin-bottom: 24px; }
+    section h2 { font-size: 1rem; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: .05em; }
+    .product-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+      padding: 14px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    .product-card .title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
+    .product-card .meta  { font-size: 0.75rem; color: var(--muted); }
+    .product-card .price { color: var(--green); font-weight: 700; font-size: 1rem; white-space: nowrap; margin-left: 12px; }
+    .tag { background: var(--border); border-radius: 4px; padding: 2px 6px; font-size: 0.7rem; color: var(--muted); margin-right: 4px; }
+    .tx-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+    .tx-row .amount { color: #f7931a; font-weight: 600; }
+    .tx-row .confirmed { color: var(--green); font-size: 0.7rem; }
+    .tx-row .unconfirmed { color: var(--muted); font-size: 0.7rem; }
+    .btn {
+      background: var(--accent); color: white; border: none; border-radius: 8px;
+      padding: 10px 20px; font-size: 0.9rem; cursor: pointer; font-weight: 600;
+    }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    .btn-outline {
+      background: transparent; color: var(--accent); border: 1.5px solid var(--accent);
+      border-radius: 8px; padding: 8px 16px; font-size: 0.85rem; cursor: pointer;
+    }
+    #trigger-row { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; }
+    #trigger-msg { font-size: 0.8rem; color: var(--muted); }
+    .btc-address {
+      background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 14px; font-family: monospace; font-size: 0.8rem; color: #f7931a;
+      word-break: break-all; margin-bottom: 12px;
+    }
+    #last-updated { font-size: 0.75rem; color: var(--muted); text-align: right; margin-bottom: 12px; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>⚡ PDF Bot</h1>
+  <span><span id="status-dot"></span><span id="status-text">Loading...</span></span>
+</header>
+<main>
+  <div id="last-updated"></div>
+
+  <!-- Stats row -->
+  <div class="grid" id="stats-grid">
+    <div class="stat-card"><div class="value" id="stat-pdfs">—</div><div class="label">PDFs Created</div></div>
+    <div class="stat-card green"><div class="value" id="stat-sales">—</div><div class="label">Total Sales</div></div>
+    <div class="stat-card green"><div class="value" id="stat-revenue">—</div><div class="label">Revenue (USD)</div></div>
+    <div class="stat-card btc"><div class="value" id="stat-btc-bal">—</div><div class="label">BTC Balance</div></div>
+    <div class="stat-card btc"><div class="value" id="stat-btc-usd">—</div><div class="label">BTC Value (USD)</div></div>
+  </div>
+
+  <!-- Trigger button -->
+  <div id="trigger-row">
+    <button class="btn" id="trigger-btn" onclick="triggerWorkflow()">▶ Generate Now</button>
+    <button class="btn-outline" onclick="loadData()">↻ Refresh</button>
+    <span id="trigger-msg"></span>
+  </div>
+
+  <!-- BTC address -->
+  <section id="btc-section" style="display:none">
+    <h2>Bitcoin Address</h2>
+    <div class="btc-address" id="btc-address-display"></div>
+  </section>
+
+  <!-- Products -->
+  <section>
+    <h2>Latest PDFs</h2>
+    <div id="products-list"><div style="color:var(--muted)">Loading...</div></div>
+  </section>
+
+  <!-- BTC transactions -->
+  <section id="tx-section" style="display:none">
+    <h2>Bitcoin Transactions</h2>
+    <div id="tx-list"></div>
+  </section>
+
+  <!-- Sales -->
+  <section>
+    <h2>Recent Sales (Gumroad)</h2>
+    <div id="sales-list"><div style="color:var(--muted)">Loading...</div></div>
+  </section>
+</main>
+
+<script>
+  // ── Config — set your GitHub repo here ─────────────────────────────────────
+  // Format: "username/repo-name"
+  const REPO = (document.querySelector('meta[name="gh-repo"]') || {}).content
+    || window.GITHUB_REPO
+    || "YOUR_GITHUB_USERNAME/pdfbot";     // ← update this
+
+  const RAW  = `https://raw.githubusercontent.com/${REPO}/main`;
+  const API  = `https://api.github.com/repos/${REPO}`;
+
+  // ── Load data ───────────────────────────────────────────────────────────────
+  async function loadData() {
+    try {
+      const [productsRes, salesRes] = await Promise.all([
+        fetch(`${RAW}/data/products.json?t=${Date.now()}`),
+        fetch(`${RAW}/data/sales.json?t=${Date.now()}`),
+      ]);
+
+      const products = productsRes.ok ? await productsRes.json() : [];
+      const sales    = salesRes.ok    ? await salesRes.json()    : {};
+
+      renderStats(products, sales);
+      renderProducts(products);
+      renderSales(sales);
+      renderBtc(sales.btc_summary || {});
+
+      document.getElementById("status-dot").className = "live";
+      document.getElementById("status-text").textContent = "Live";
+
+      const lu = sales.last_updated
+        ? `Last synced: ${new Date(sales.last_updated).toLocaleString()}`
+        : "";
+      document.getElementById("last-updated").textContent = lu;
+
+    } catch (e) {
+      document.getElementById("status-text").textContent = "Error loading data";
+      console.error(e);
+    }
+  }
+
+  function renderStats(products, sales) {
+    const gumSales  = sales.gumroad_sales || [];
+    const revenue   = gumSales.reduce((s, t) => s + parseFloat(t.price || 0), 0);
+    const btc       = sales.btc_summary || {};
+
+    document.getElementById("stat-pdfs").textContent    = products.length;
+    document.getElementById("stat-sales").textContent   = gumSales.length;
+    document.getElementById("stat-revenue").textContent = `$${revenue.toFixed(2)}`;
+    document.getElementById("stat-btc-bal").textContent = btc.balance_btc
+      ? `${btc.balance_btc.toFixed(6)}`  : "—";
+    document.getElementById("stat-btc-usd").textContent = btc.balance_usd
+      ? `$${btc.balance_usd}`            : "—";
+  }
+
+  function renderProducts(products) {
+    const el = document.getElementById("products-list");
+    if (!products.length) { el.innerHTML = `<div style="color:var(--muted)">No PDFs yet. Click Generate Now!</div>`; return; }
+    el.innerHTML = products.slice().reverse().slice(0, 20).map(p => `
+      <div class="product-card">
+        <div>
+          <div class="title">${p.title || p.topic}</div>
+          <div class="meta">
+            🌍 ${p.country} &nbsp;·&nbsp;
+            📅 ${p.created_at ? new Date(p.created_at).toLocaleDateString() : ''} &nbsp;·&nbsp;
+            ${(p.tags||[]).map(t => `<span class="tag">#${t}</span>`).join("")}
+          </div>
+          <div class="meta" style="margin-top:4px">
+            ${p.gumroad_url ? `<a href="${p.gumroad_url}" target="_blank">Gumroad ↗</a>` : ''}
+            ${p.pdf_url     ? ` &nbsp;·&nbsp; <a href="${p.pdf_url}" target="_blank">Download ↗</a>` : ''}
+          </div>
+        </div>
+        <div class="price">$${p.price_usd || '4.99'}</div>
+      </div>
+    `).join("");
+  }
+
+  function renderSales(sales) {
+    const el   = document.getElementById("sales-list");
+    const list = sales.gumroad_sales || [];
+    if (!list.length) { el.innerHTML = `<div style="color:var(--muted)">No sales yet.</div>`; return; }
+    el.innerHTML = list.slice().reverse().slice(0, 15).map(s => `
+      <div class="tx-row">
+        <div>
+          <div>${s.product_name || s.product_id}</div>
+          <div style="font-size:.75rem;color:var(--muted)">${s.email || ''} · ${s.created_at ? new Date(s.created_at).toLocaleDateString() : ''}</div>
+        </div>
+        <div class="amount">$${parseFloat(s.price||0).toFixed(2)}</div>
+      </div>
+    `).join("");
+  }
+
+  function renderBtc(btc) {
+    if (!btc.address) return;
+    document.getElementById("btc-section").style.display = "";
+    document.getElementById("btc-address-display").textContent = btc.address;
+
+    const txs = btc.recent_txs || [];
+    if (txs.length) {
+      document.getElementById("tx-section").style.display = "";
+      document.getElementById("tx-list").innerHTML = txs.map(t => `
+        <div class="tx-row">
+          <div>
+            <div style="font-family:monospace;font-size:.75rem">${t.txid.slice(0,16)}…</div>
+            <div style="font-size:.72rem;color:var(--muted)">${t.timestamp_utc ? new Date(t.timestamp_utc).toLocaleString() : ''}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="amount">${t.amount_btc.toFixed(6)} BTC</div>
+            <div class="${t.confirmed ? 'confirmed' : 'unconfirmed'}">${t.confirmed ? '✓ Confirmed' : '⏳ Pending'}</div>
+          </div>
+        </div>
+      `).join("");
+    }
+  }
+
+  // ── Trigger workflow via GitHub API ─────────────────────────────────────────
+  async function triggerWorkflow() {
+    const token = prompt("Enter your GitHub Personal Access Token (workflow scope):");
+    if (!token) return;
+    const btn = document.getElementById("trigger-btn");
+    const msg = document.getElementById("trigger-msg");
+    btn.disabled = true;
+    msg.textContent = "Triggering...";
+    try {
+      const r = await fetch(`${API}/actions/workflows/trend-scan.yml/dispatches`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Accept": "application/vnd.github+json",
+        },
+        body: JSON.stringify({ ref: "main" }),
+      });
+      msg.textContent = r.ok ? "✓ Workflow triggered! Check Actions tab." : `Error: ${r.status}`;
+    } catch (e) {
+      msg.textContent = `Error: ${e.message}`;
+    } finally {
+      btn.disabled = false;
+      setTimeout(() => { msg.textContent = ""; }, 8000);
+    }
+  }
+
+  // ── Init ────────────────────────────────────────────────────────────────────
+  loadData();
+  setInterval(loadData, 60_000);   // refresh every minute
+</script>
+</body>
+</html>
