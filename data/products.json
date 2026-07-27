@@ -508,5 +508,25 @@
     "etsy_url": "",
     "created_at": "2026-07-20T12:22:21.989738+00:00",
     "is_bundle": true
+  },
+  {
+    "id": "bundle-20260727",
+    "topic": "Bundle: 5 guides",
+    "country": "US",
+    "title": "PDF Bundle: 5 Premium Guides (20260727)",
+    "subtitle": "5 PDF guides, instant download",
+    "tags": [
+      "bundle",
+      "ebook",
+      "guide",
+      "digitaldownload"
+    ],
+    "price_usd": 19.99,
+    "pdf_url": "https://github.com/Cfeesto/pdfbot/releases/download/bundle-20260727/PDF_Bundle_20260727_5_Guides.zip",
+    "gumroad_url": "https://abdullahali14.gumroad.com/l/sfvyy",
+    "gumroad_id": "",
+    "etsy_url": "",
+    "created_at": "2026-07-27T13:15:47.575777+00:00",
+    "is_bundle": true
   }
 ]
